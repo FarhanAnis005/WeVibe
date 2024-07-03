@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        #slider {
+            -webkit-appearance: slider-vertical; /* WebKit */
+            -moz-appearance: slider-vertical; /* Mozilla */
+            appearance: slider-vertical; /* Standard */
+            writing-mode: bt-lr; /* IE */
+            width: 8px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+    <h1>Admin Page</h1>
+    
+    <input type="range" min="0" max="10" value="0" id="slider">
+    <span id="sliderValue">0</span>
+
+    <script>
+        const slider = document.getElementById('slider');
+        const sliderValue = document.getElementById('sliderValue');
+
+        const ws = new WebSocket('{{ ws_url }}');
+
+        ws.onopen = () => {
+            console.log('Connected to WebSocket');
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Received from server:', event.data);
+        };
+
+        slider.addEventListener('input', () => {
+            sliderValue.textContent = slider.value;
+            ws.send(slider.value);
+        });
+    </script>
+    </center>
+</body>
+</html>

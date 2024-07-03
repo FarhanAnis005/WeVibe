@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #currentValue {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #ff4500;
+        }
+        #startVibration {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        #startVibration:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Are you ready 😏</h1>
+    <span id="displayText">It's kinda quiet here</span>
+    <span id="currentValue"> </span>
+    <button id="startVibration">Start</button>
+
+    <script>
+
+        const displayText = document.getElementById('displayText');
+        const currentValue = document.getElementById('currentValue');
+        const startVibrationButton = document.getElementById('startVibration');
+        let vibrationTimeout;
+        const ws = new WebSocket('{{ ws_url }}');
+        
+        ws.onopen = () => {
+            console.log('Connected to WebSocket');
+        };
+
+        ws.onmessage = (event) => {
+            console.log('Received from server:', event.data);
+            const value = parseInt(event.data, 10);
+            updateDisplayText(value);
+            handleVibration(value);
+        };
+
+        function updateDisplayText(value) {
+            if (value === 0) {
+                displayText.textContent = "It's kinda quiet here";
+            } else if (value >= 1 && value <= 3) {
+                displayText.textContent = "How did that feel?";
+            } else if (value >= 4 && value <= 6) {
+                displayText.textContent = "We might speed up soon";
+            } else if (value >= 7 && value <= 9) {
+                displayText.textContent = "Enjoy it while it lasts";
+            } else if (value === 10) {
+                displayText.textContent = "Big O!";
+            }
+        }
+
+        startVibrationButton.addEventListener('click', () => {
+            const value = parseInt(currentValue.textContent, 10);
+            handleVibration(value);
+        });
+
+        function handleVibration(value) {
+            // Clear any existing vibration timeout
+            if (vibrationTimeout) {
+                clearTimeout(vibrationTimeout);
+                vibrationTimeout = null;
+            }
+
+            // Stop any ongoing vibration
+            navigator.vibrate(0);
+
+            if (value > 0 && value <= 10) {
+                // Define vibration intensity based on the current value
+                let vibrationDuration = 200 * value; // Duration increases with value
+                let pauseDuration = 1000 - (100 * value); // Pause decreases with value
+                let vibrationPattern = [vibrationDuration, pauseDuration]; // Example: [vibrate 1800ms, pause 100ms]
+
+                let startTime = Date.now();
+
+                const vibrate = () => {
+                    if (Date.now() - startTime < 120000 && parseInt(currentValue.textContent, 10) === value) {
+                        navigator.vibrate(vibrationPattern);
+                        vibrationTimeout = setTimeout(vibrate, vibrationDuration + pauseDuration); // Continue vibration
+                    } else {
+                        navigator.vibrate(0); // Stop vibration after 2 minutes or if value changes
+                    }
+                };
+
+                vibrate();
+            }
+        }
+    </script>
+</body>
+</html>
