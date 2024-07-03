@@ -3,9 +3,8 @@
 This is a fun application built using FastAPI, WebSockets, and ngrok. The app allows an admin to control a slider, and the client’s phone will vibrate according to the slider value. The app is hosted using ngrok for easy public access.
 
 ## Features
-- Real-time slider control using WebSockets.
-- Client-side phone vibration based on the slider value.
-- Easy deployment using ngrok.
+- Real-time slider control using WebSockets on the admin page.
+- Client-side phone vibration pattern changes based on the slider value.
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FarhanAnis005/WeVibe/blob/main/Vibe.ipynb)
 
