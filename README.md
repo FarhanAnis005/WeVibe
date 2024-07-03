@@ -7,6 +7,8 @@ This is a fun application built using FastAPI, WebSockets, and ngrok. The app al
 - Client-side phone vibration based on the slider value.
 - Easy deployment using ngrok.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/FarhanAnis005/WeVibe/blob/main/Vibe.ipynb)
+
 ## Installation
 
 1. Clone the repository:
