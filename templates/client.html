@@ -65,6 +65,7 @@
             console.log('Received from server:', event.data);
             const value = parseInt(event.data, 10);
             updateDisplayText(value);
+            currentValue.textContent = value;
             handleVibration(value);
         };
 
